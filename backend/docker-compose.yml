@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # Database PostgreSQL
+  db:
+    image: postgres:15-alphine
+    container_name: growup_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=user_growup
+      - POSTGRES_PASSWORD=pass_growup
+      - POSTGRES_DB=umkm_grow_db
+    ports:
+      - "5432:5432"
+
+  # Redis sebagai Broker untuk Celery
+  redis:
+    image: redis:7-alphine
+    container_name: growup_redis
+    ports:
+      - "6379:6379"
+
+  # Backend API (FastAPI)
+  api:
+    build: .
+    container_name: growup_api
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://user_growup:pass_growup@db:5432/umkm_grow_db
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
+  # Celery Worker untuk memproses AI Scoring
+  worker:
+    build: .
+    container_name: growup_worker
+    command: celery -A worker.celery_app worker --loglevel=info
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgresql://user_growup:pass_growup@db:5432/umkm_grow_db
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - db
+
+volumes:
+  postgres_data:
