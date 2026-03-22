@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UMKM Grow-Up | Enterprise Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-item-active { background-color: #1e40af; color: white; }
+        /* Perbaikan utama: Membatasi tinggi kontainer chart */
+        .chart-container { position: relative; height: 300px; width: 100%; }
+    </style>
+</head>
+<body class="h-full overflow-hidden">
+    <div class="flex h-screen overflow-hidden bg-slate-50">
+        
+        <aside class="hidden md:flex md:flex-shrink-0">
+            <div class="flex flex-col w-64 bg-slate-900">
+                <div class="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto">
+                    <div class="flex items-center flex-shrink-0 px-4 mb-10">
+                        <div class="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+                            <span class="text-white font-bold text-xl">U</span>
+                        </div>
+                        <span class="text-white font-bold text-lg tracking-wider">GROW-UP</span>
+                    </div>
+                    <nav class="flex-1 px-4 space-y-2">
+                        <a href="#" class="sidebar-item-active flex items-center px-4 py-3 text-sm font-medium rounded-xl">Dashboard</a>
+                        <a href="#" class="text-slate-300 hover:bg-slate-800 hover:text-white flex items-center px-4 py-3 text-sm font-medium rounded-xl">Analisis QRIS</a>
+                        <a href="#" class="text-slate-300 hover:bg-slate-800 hover:text-white flex items-center px-4 py-3 text-sm font-medium rounded-xl">Skor Kredit AI</a>
+                        <a href="#" class="text-slate-300 hover:bg-slate-800 hover:text-white flex items-center px-4 py-3 text-sm font-medium rounded-xl">Pengaturan</a>
+                    </nav>
+                </div>
+            </div>
+        </aside>
+
+        <div class="flex flex-col flex-1 w-0 overflow-hidden">
+            
+            <header class="relative z-10 flex flex-shrink-0 h-16 bg-white border-b border-slate-200">
+                <div class="flex justify-between flex-1 px-8">
+                    <div class="flex items-center">
+                        <span class="text-slate-400 text-sm mr-2">Merchant:</span>
+                        <span class="font-semibold text-slate-700">Warung Kopi Digital</span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right hidden sm:block">
+                            <p class="text-xs font-bold text-slate-800">Ibra Admin</p>
+                            <p class="text-[10px] text-slate-500">Super User</p>
+                        </div>
+                        <img class="h-9 w-9 rounded-full border border-slate-200" src="https://ui-avatars.com/api/?name=Ibra+Admin&background=1e40af&color=fff" alt="User">
+                    </div>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-8">
+                
+                <div class="max-w-7xl mx-auto">
+                    <div class="mb-8">
+                        <h1 class="text-2xl font-bold text-slate-900">Ringkasan Eksekutif</h1>
+                        <p class="text-sm text-slate-500">Data performa bisnis periode Maret 2026.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-center">
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Grow-Up Score</p>
+                            <p class="text-5xl font-black text-blue-600 my-2">82.4</p>
+                            <span class="px-3 py-1 bg-green-100 text-green-700 text-[10px] font-bold rounded-full">PLATINUM</span>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-center">
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Volume QRIS</p>
+                            <p class="text-4xl font-bold text-slate-800 my-2">Rp 42.5M</p>
+                            <p class="text-green-500 text-xs font-bold">↑ 12.5% <span class="text-slate-300 font-normal">vs bln lalu</span></p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-center">
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Transaksi</p>
+                            <p class="text-4xl font-bold text-slate-800 my-2">1,248</p>
+                            <p class="text-slate-400 text-xs italic">Avg. 42 per hari</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                            <h3 class="text-sm font-bold text-slate-800 mb-6 uppercase tracking-wider">Tren Pendapatan</h3>
+                            <div class="chart-container">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                            <h3 class="text-sm font-bold text-slate-800 mb-6 uppercase tracking-wider">Alokasi Biaya (PFM)</h3>
+                            <div class="chart-container">
+                                <canvas id="expenseChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const ctxLine = document.getElementById('revenueChart').getContext('2d');
+        const ctxDoughnut = document.getElementById('expenseChart').getContext('2d');
+
+        // Line Chart - Revenue
+        new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: ['Okt', 'Nov', 'Des', 'Jan', 'Feb', 'Mar'],
+                datasets: [{
+                    data: [25, 28, 35, 32, 38, 42.5],
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Penting: Mengikuti tinggi kontainer .chart-container
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Doughnut Chart - Expense
+        new Chart(ctxDoughnut, {
+            type: 'doughnut',
+            data: {
+                labels: ['Stok', 'Logistik', 'Iklan', 'Lainnya'],
+                datasets: [{
+                    data: [45, 20, 15, 20],
+                    backgroundColor: ['#1e40af', '#3b82f6', '#93c5fd', '#e2e8f0'],
+                    borderWidth: 4,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
